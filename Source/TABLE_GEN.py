@@ -68,9 +68,25 @@ Table.gen('sine',
           prefix    = '',
           fmt       = '6d')
 
-Table.gen('ramp',
+Table.gen('triangle',
+          bits      = 16,
+          func      = lambda i,x : int(((1 - 4 * x) if x < 0.5 else (4 * x - 3)) * 0x7FFF + 0.5),
+          log2_size = 16,
+          typename  = "int16_t",
+          prefix    = '',
+          fmt       = '6d')
+
+Table.gen('ramp_up',
           bits      = 16,
           func      = lambda i,x : int((2 * x - 1) * 0x7FFF + 0.5),
+          log2_size = 16,
+          typename  = "int16_t",
+          prefix    = '',
+          fmt       = '6d')
+
+Table.gen('ramp_dn',
+          bits      = 16,
+          func      = lambda i,x : int((1 - 2 * x) * 0x7FFF + 0.5),
           log2_size = 16,
           typename  = "int16_t",
           prefix    = '',

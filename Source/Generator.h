@@ -26,7 +26,7 @@
 
 #include "Oscillator.h"
 
-class Generator : public MIDI::Instrument</* NUM_VOICES */ 2>
+class Generator : public MIDI::Instrument</* NUM_VOICES */ 1>
 {
 public:
    Generator() = default;
@@ -34,67 +34,17 @@ public:
    int16_t left()  { return osc_lft(); }
    int16_t right() { return osc_rgt(); }
 
-   void getInfo(unsigned voice_, char* buffer_) 
+   void getInfo(bool left_, char* buffer16_) const
    {
-      Oscillator* osc = getOsc(voice_);
-
-      // Frequency
-      char     freq_text[16];
-      unsigned freqx1000 = osc->getFreqx1000();
-      unsigned units     = freqx1000 / 1000;
-      if (units < 100)
-      {
-         unsigned frac = (freqx1000 % 1000) / 10;
-         snprintf(freq_text, 16, "%2u.%02u ", units, frac);
-      }
-      else if (units < 1000)
-      {
-         unsigned frac = (freqx1000 % 1000) / 100;
-         snprintf(freq_text, 16, "%3u.%u ", units, frac);
-      }
-      else if (units < 10000)
-      {
-         units = units / 1000;
-         unsigned frac = (freqx1000 % 1000000) / 1000;
-         snprintf(freq_text, 16, "%u.%03uk", units, frac);
-      }
+      if (left_)
+         osc_lft.getInfo(buffer16_);
       else
-      {
-         units = units / 1000;
-         unsigned frac = (freqx1000 % 1000000) / 10000;
-         snprintf(freq_text, 16, "%2u.%02uk", units, frac);
-      }
-
-      // Musical note
-      char     note_text[16];
-      unsigned note   = osc->getNote();
-      unsigned detune = osc->getDetune();
-      unsigned octave = note / 12;
-      if ((detune == 0) && (octave < 10))
-      {
-         unsigned semitone = note % 12;
-         const char* NOTE_LETTER = "CCDDEFFGGAAB";
-         const char* NOTE_SHARP  = " # #  # # # ";
-         snprintf(note_text, 16, "%c%u%c", NOTE_LETTER[semitone], octave, NOTE_SHARP[semitone]);
-      }
-      else
-      {
-         snprintf(note_text, 16, "---");
-      }
-
-      // Amplitude
-      char     ampl_text[16];
-      unsigned ampl = osc->getAmpl() * 99 / 127;
-      snprintf(ampl_text, 16, "%2u", ampl);
-
-      snprintf(buffer_, 16, "f%6s %3s a%2s", freq_text, note_text, ampl_text);
+         osc_rgt.getInfo(buffer16_);
    }
 
 private:
    void voiceControl(unsigned voice_, uint8_t control_, uint8_t value_) override
    {
-      if (voice_ != 0) return;
-
       switch(control_)
       {
       case 2: osc_lft.setNote(value_);   break;
@@ -109,20 +59,22 @@ private:
       }
    }
 
-   Oscillator* getOsc(unsigned voice_)
+   void voiceProgram(unsigned, uint8_t prog_) override
    {
-      switch(voice_)
+      switch(prog_)
       {
-      case 0: return &osc_lft; break;
-      case 1: return &osc_rgt; break;
-      }
+      case 0: osc_rgt.changeWave(-1); break;
+      case 1: osc_rgt.changeWave(+1); break;
 
-      return nullptr;
+      case 4: osc_lft.changeWave(-1); break;
+      case 5: osc_lft.changeWave(+1); break;
+      }
    }
 
-   void voiceOn(unsigned voice_, uint8_t note_, uint8_t velocity_) override
+   void voiceOn(unsigned, uint8_t note_, uint8_t velocity_) override
    {
-      Oscillator* osc = getOsc(voice_);
+      Oscillator* osc = left_note ? &osc_lft : &osc_rgt;
+      left_note = not left_note;
 
       osc->setNote(note_ - 12);
       osc->setDetune(0);
@@ -130,7 +82,7 @@ private:
       osc->setAmpl(velocity_);
    }
 
+   bool       left_note{true};
    Oscillator osc_lft{};
    Oscillator osc_rgt{};
 };
-

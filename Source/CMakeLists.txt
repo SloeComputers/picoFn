@@ -37,8 +37,12 @@ add_custom_command(
    OUTPUT
       ${CMAKE_CURRENT_BINARY_DIR}/Table_sine.h
       ${CMAKE_CURRENT_BINARY_DIR}/Table_sine.cpp
-      ${CMAKE_CURRENT_BINARY_DIR}/Table_ramp.h
-      ${CMAKE_CURRENT_BINARY_DIR}/Table_ramp.cpp
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_triangle.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_triangle.cpp
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_ramp_up.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_ramp_up.cpp
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_ramp_dn.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_ramp_dn.cpp
       ${CMAKE_CURRENT_BINARY_DIR}/Table_delta.h
       ${CMAKE_CURRENT_BINARY_DIR}/Table_delta.cpp
       ${CMAKE_CURRENT_BINARY_DIR}/Table_freq.h
@@ -49,8 +53,11 @@ foreach(hw_config ${hw_config_list})
 
    add_executable(picofn_${hw_config}
                   picofn.cpp
+                  symbol.cpp
                   Table_sine.cpp
-                  Table_ramp.cpp
+                  Table_triangle.cpp
+                  Table_ramp_up.cpp
+                  Table_ramp_dn.cpp
                   Table_delta.cpp
                   Table_freq.cpp)
 

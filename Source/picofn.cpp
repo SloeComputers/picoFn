@@ -28,6 +28,7 @@
 #include "hw/hw.h"
 
 #include "Generator.h"
+#include "Symbol.h"
 
 static const unsigned DAC_FREQ         = 48000;                 //!< DAC sample rate (Hz)
 static const unsigned TICK_RATE        = 400;                   //!< Control rate 400 Hz
@@ -125,15 +126,19 @@ int main()
 #if not defined(HW_LCD_NONE)
    hw::Lcd lcd{};
 
+   symbolDefine(lcd);
+
    while(true)
    {
-      for(unsigned voice = 0; voice < 2; ++voice)
-      {
-         char buffer[17];
-         generator.getInfo(voice, buffer);
-         lcd.move(0, voice);
-         lcd.print(buffer);
-      }
+      char buffer[17];
+
+      generator.getInfo(/* left */ true, buffer);
+      lcd.move(0, 0);
+      lcd.print(buffer);
+
+      generator.getInfo(/* left */ false, buffer);
+      lcd.move(0, 1);
+      lcd.print(buffer);
 
       usleep(100000);
    }
