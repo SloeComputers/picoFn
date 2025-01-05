@@ -40,6 +40,9 @@ public:
          osc_lft.getInfo(buffer16_);
       else
          osc_rgt.getInfo(buffer16_);
+
+      if (left_note == left_)
+         buffer16_[8] = '>';
    }
 
 private:
