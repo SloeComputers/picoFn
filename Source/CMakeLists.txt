@@ -47,6 +47,10 @@ add_custom_command(
       ${CMAKE_CURRENT_BINARY_DIR}/Table_delta.cpp
       ${CMAKE_CURRENT_BINARY_DIR}/Table_freq.h
       ${CMAKE_CURRENT_BINARY_DIR}/Table_freq.cpp
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_amp.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_amp.cpp
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_attenutaion.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Table_attenuation.cpp
    )
 
 foreach(hw_config ${hw_config_list})
@@ -59,7 +63,9 @@ foreach(hw_config ${hw_config_list})
                   Table_ramp_up.cpp
                   Table_ramp_dn.cpp
                   Table_delta.cpp
-                  Table_freq.cpp)
+                  Table_freq.cpp
+                  Table_amp.cpp
+                  Table_attenuation.cpp)
 
    target_compile_definitions(picofn_${hw_config} PRIVATE HW_${hw_config})
    target_include_directories(picofn_${hw_config}

@@ -111,8 +111,8 @@ static const uint8_t BITMAP_DB[8] =
 static const uint8_t BITMAP_INFINITY[8] =
 {
    0b00000,
-   0b00000,
    0b01010,
+   0b10101,
    0b10101,
    0b01010,
    0b00000,

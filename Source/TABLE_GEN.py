@@ -40,9 +40,15 @@ def index2freq(index):
    return freq
 
 def delta_fn(i, x):
+   """ Convert 14-bit table index to a .32-bit frequency ratio """
+
    DAC_FREQ = 48000
    ratio = index2freq(i) / DAC_FREQ
    return int(ratio * (1<<32) + 0.5)
+
+def amp_fn(x):
+   DB_RANGE = 60
+   return math.pow(10, (DB_RANGE / 20) * (x - 1)) if x > 0 else 0
 
 Table.gen('delta',
           bits      = 32,
@@ -91,3 +97,19 @@ Table.gen('ramp_dn',
           typename  = "int16_t",
           prefix    = '',
           fmt       = '6d')
+
+Table.gen('amp',
+          bits      = 16,
+          func      = lambda i,x : int(amp_fn(x) * 0xFFFF + 0.5),
+          log2_size = 7,
+          typename  = "uint16_t",
+          prefix    = '0x',
+          fmt       = '04x')
+
+Table.gen('attenuation',
+          bits      = 8,
+          func      = lambda i,x : int((20 * math.log10(amp_fn(x)) * 10 if i > 0 else 0x8000) - 0.5),
+          log2_size = 7,
+          typename  = "int16_t",
+          prefix    = '',
+          fmt       = '3d')

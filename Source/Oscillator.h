@@ -31,6 +31,8 @@
 
 #include "Table_delta.h"
 #include "Table_freq.h"
+#include "Table_amp.h"
+#include "Table_attenuation.h"
 
 #include "Symbol.h"
 
@@ -48,7 +50,7 @@ public:
       setNote(69 - 12);
       setDetune(0);
       setPhase(0);
-      setAmpl(128);
+      setAmpl(127);
    }
 
    void getInfo(char* buffer16_) const
@@ -110,12 +112,24 @@ public:
       }
 
       // Amplitude
-      char     atten_text[16];
-      unsigned atten = amp * 99 / 127;
-      snprintf(atten_text, 16, "%2u", atten);
+      char atten_text[16];
+      if (amp_index == 0)
+      {
+         snprintf(atten_text, 16, "   %c", SYMBOL_INFINITY);
+      }
+      else
+      {
+         unsigned attenx10 = -table_attenuation[amp_index];
+         unsigned units    = attenx10 / 10;
+         unsigned tenths   = attenx10 % 10;
+         if (attenx10 < 10)
+            snprintf(atten_text, 16, "   0");
+         else
+            snprintf(atten_text, 16, "%2u.%u", units, tenths);
+      }
 
-      snprintf(buffer16_, 16, "%c %6s %3s %2s%c", wave_symbol, freq_text, note_text, atten_text,
-               SYMBOL_DB);
+      snprintf(buffer16_, 16, "%c %6s %3s%4s",
+               wave_symbol, freq_text, note_text, atten_text);
    }
 
    void sync()
@@ -155,7 +169,8 @@ public:
 
    void setAmpl(unsigned amp_)
    {
-      amp = amp_;
+      amp_index = amp_;
+      amp       = table_amp[amp_];
    }
 
    void setPhase(unsigned phase_)
@@ -181,7 +196,7 @@ public:
       default:       sample = 0;          break;
       }
 
-      return sample * amp / 0x80;
+      return sample * amp / 0x10000;
    }
 
 private:
@@ -229,6 +244,7 @@ private:
    Wave     wave{SINE};
    uint8_t  exp_freq_hi7{0};
    uint8_t  exp_freq_lo7{0};
+   uint8_t  amp_index{};
    unsigned amp{};
    unsigned freqx1000{};
 

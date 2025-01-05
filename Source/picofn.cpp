@@ -38,6 +38,7 @@ static const bool     MIDI_DEBUG       = false;
 
 static Generator                    generator{};
 static hw::MidiIn                   midi_in{generator, MIDI_DEBUG};
+static hw::Led                      led{};
 static hw::Audio<SAMPLES_PER_TICK>  audio{DAC_FREQ};
 
 #if defined(HW_MIDI_USB_DEVICE)
@@ -55,6 +56,8 @@ static void hwTick()
 #if defined(HW_MIDI_USB_DEVICE)
    midi_usb.tick();
 #endif
+
+   led = generator.isAnyVoiceOn();
 }
 
 
@@ -125,24 +128,26 @@ int main()
 
 #if not defined(HW_LCD_NONE)
    hw::Lcd lcd{};
-
    symbolDefine(lcd);
+#endif
 
    while(true)
    {
-      char buffer[17];
+      for(unsigned line = 0; line < 2; ++line)
+      {
+         char buffer[17];
 
-      generator.getInfo(/* left */ true, buffer);
-      lcd.move(0, 0);
-      lcd.print(buffer);
+         generator.getInfo(/* left */ line == 0, buffer);
+         printf("%s\n", buffer);
 
-      generator.getInfo(/* left */ false, buffer);
-      lcd.move(0, 1);
-      lcd.print(buffer);
+#if not defined(HW_LCD_NONE)
+         lcd.move(0, line);
+         lcd.print(buffer);
+#endif
+      }
 
       usleep(100000);
    }
-#endif
 
    return 0;
 }
