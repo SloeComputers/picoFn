@@ -28,11 +28,11 @@
 #include "Table_triangle.h"
 #include "Table_ramp_up.h"
 #include "Table_ramp_dn.h"
-
 #include "Table_delta.h"
-#include "Table_freq.h"
+#include "Table_freq_mHz.h"
 #include "Table_amp.h"
-#include "Table_attenuation.h"
+#include "Table_atten_cB.h"
+#include "Table_const.h"
 
 #include "Symbol.h"
 
@@ -47,7 +47,7 @@ public:
    Oscillator()
    {
       setWave(SINE);
-      setNote(69 - 12);
+      setNote(69 - 8);
       setDetune(0);
       setPhase(0);
       setAmpl(127);
@@ -69,64 +69,66 @@ public:
       }
 
       // Frequency
-      char     freq_text[16];
-      unsigned units = freqx1000 / 1000;
+      char     freq_text[7];
+      unsigned units = freq_mHz / 1000;
       if (units < 100)
       {
-         unsigned frac = (freqx1000 % 1000) / 10;
-         snprintf(freq_text, 16, "%2u.%02u ", units, frac);
+         unsigned frac = (freq_mHz % 1000) / 10;
+         snprintf(freq_text, sizeof(freq_text), "%2u.%02u ", units, frac);
       }
       else if (units < 1000)
       {
-         unsigned frac = (freqx1000 % 1000) / 100;
-         snprintf(freq_text, 16, "%3u.%u ", units, frac);
+         unsigned frac = (freq_mHz % 1000) / 100;
+         snprintf(freq_text, sizeof(freq_text), "%3u.%u ", units, frac);
       }
       else if (units < 10000)
       {
          units = units / 1000;
-         unsigned frac = (freqx1000 % 1000000) / 1000;
-         snprintf(freq_text, 16, "%u.%03uk", units, frac);
+         unsigned frac = (freq_mHz % 1000000) / 1000;
+         snprintf(freq_text, sizeof(freq_text), "%u.%03uk", units, frac);
       }
       else
       {
          units = units / 1000;
-         unsigned frac = (freqx1000 % 1000000) / 10000;
-         snprintf(freq_text, 16, "%2u.%02uk", units, frac);
+         unsigned frac = (freq_mHz % 1000000) / 10000;
+         snprintf(freq_text, sizeof(freq_text), "%2u.%02uk", units, frac);
       }
 
       // Musical note
-      char     note_text[16];
-      unsigned note   = exp_freq_hi7;
+      char     note_text[4];
+      signed   note   = exp_freq_hi7 - 4;
       unsigned detune = exp_freq_lo7;
-      unsigned octave = note / 12;
+      signed   octave = note / 12;
       if ((detune == 0) && (octave < 10))
       {
-         unsigned semitone = note % 12;
+         unsigned semitone = (note + 12) % 12;
          const char* NOTE_LETTER = "CCDDEFFGGAAB";
          const char* NOTE_SHARP  = " # #  # # # ";
-         snprintf(note_text, 16, "%c%u%c", NOTE_LETTER[semitone], octave, NOTE_SHARP[semitone]);
+
+         if (octave == -1)
+            snprintf(note_text, sizeof(note_text), "%c%c%c",
+                     NOTE_LETTER[semitone], SYMBOL_MINUS_ONE, NOTE_SHARP[semitone]);
+         else
+            snprintf(note_text, sizeof(note_text), "%c%u%c",
+                     NOTE_LETTER[semitone], octave, NOTE_SHARP[semitone]);
       }
       else
       {
-         snprintf(note_text, 16, "-- ");
+         snprintf(note_text, sizeof(note_text), "-- ");
       }
 
       // Amplitude
-      char atten_text[16];
-      if (amp_index == 0)
-      {
-         snprintf(atten_text, 16, "   %c", SYMBOL_INFINITY);
-      }
+      char atten_text[5];
+      unsigned atten_cb  = table_atten_cB[amp_index];
+      unsigned db        = atten_cb / 10;
+      unsigned db_tenths = atten_cb % 10;
+      if (atten_cb == ATTEN_INFINITY)
+         snprintf(atten_text, sizeof(atten_text), "   %c", SYMBOL_INFINITY);
+      else if (atten_cb == 0)
+         snprintf(atten_text, sizeof(atten_text), "   0");
       else
-      {
-         unsigned attenx10 = -table_attenuation[amp_index];
-         unsigned units    = attenx10 / 10;
-         unsigned tenths   = attenx10 % 10;
-         if (attenx10 < 10)
-            snprintf(atten_text, 16, "   0");
-         else
-            snprintf(atten_text, 16, "%2u.%u", units, tenths);
-      }
+         snprintf(atten_text, sizeof(atten_text), "%2u.%u", db, db_tenths);
+
 
       snprintf(buffer16_, 16, "%c %6s %3s%4s",
                wave_symbol, freq_text, note_text, atten_text);
@@ -147,35 +149,35 @@ public:
       }
    }
 
-   void changeWave(signed delta)
+   void changeWave(signed delta_)
    {
-      if ((delta < 0) && (wave > SINE))
+      if ((delta_ < 0) && (wave > SINE))
          setWave(wave - 1);
-      else if ((delta > 0) && (wave < NOISE))
+      else if ((delta_ > 0) && (wave < NOISE))
          setWave(wave + 1);
    }
 
-   void setNote(uint8_t value_)
+   void setNote(uint8_t value7_)
    {
-      exp_freq_hi7 = value_;
+      exp_freq_hi7 = value7_;
       updateExpFreq();
    }
 
-   void setDetune(uint8_t value_)
+   void setDetune(uint8_t value7_)
    {
-      exp_freq_lo7 = value_;
+      exp_freq_lo7 = value7_;
       updateExpFreq();
    }
 
-   void setAmpl(unsigned amp_)
+   void setAmpl(unsigned amp7_)
    {
-      amp_index = amp_;
-      amp       = table_amp[amp_];
+      amp_index = amp7_;
+      amp       = table_amp[amp7_];
    }
 
-   void setPhase(unsigned phase_)
+   void setPhase(unsigned phase7_)
    {
-      offset_0_32 = phase_ << 25;
+      offset_0_32 = phase7_ << (PHASE_BITS - 7);
    }
 
    //! Return next sample for this oscillator
@@ -202,27 +204,29 @@ public:
 private:
    int16_t sine() const
    {
-      return table_sine[(phase_0_32 + offset_0_32) >> 16];
+      return table_sine[(phase_0_32 + offset_0_32) >> PHASE_SHIFT];
    }
 
    int16_t triangle() const
    {
-      return table_triangle[phase_0_32 >> 16];
+      return table_triangle[phase_0_32 >> PHASE_SHIFT];
    }
 
    int16_t pulse () const
    {
-      return phase_0_32 >= ((offset_0_32/2) + 0x80000000) ? 0x7FFF : -0x7FFF;
+      const uint32_t PHASE_PI = 1 << (PHASE_BITS - 1);
+      return phase_0_32 >= (PHASE_PI + (offset_0_32 / 2)) ? +SAMPLE_MAX
+                                                          : -SAMPLE_MAX;
    }
 
    int16_t ramp_up() const
    {
-      return table_ramp_up[phase_0_32 >> 16];
+      return table_ramp_up[phase_0_32 >> PHASE_SHIFT];
    }
 
    int16_t ramp_dn() const
    {
-      return table_ramp_dn[phase_0_32 >> 16];
+      return table_ramp_dn[phase_0_32 >> PHASE_SHIFT];
    }
 
    int16_t noise()
@@ -236,17 +240,19 @@ private:
 
    void updateExpFreq()
    {
-      unsigned index = (exp_freq_hi7 << 7) | exp_freq_lo7;
+      unsigned index = (exp_freq_hi7 << FREQ_FRAC_BITS) | exp_freq_lo7;
       delta_0_32 = table_delta[index];
-      freqx1000  = table_freq[index];
+      freq_mHz   = table_freq_mHz[index];
    }
+
+   static const unsigned PHASE_SHIFT = PHASE_BITS - LOG2_WAVE_SIZE;
 
    Wave     wave{SINE};
    uint8_t  exp_freq_hi7{0};
    uint8_t  exp_freq_lo7{0};
    uint8_t  amp_index{};
    unsigned amp{};
-   unsigned freqx1000{};
+   unsigned freq_mHz{};
 
    uint32_t offset_0_32{0}; //!< Oscillator phase offset (x2pi) Q0.32
    uint32_t delta_0_32{0};  //!< Oscillator phase inc    (x2pi) Q0.32

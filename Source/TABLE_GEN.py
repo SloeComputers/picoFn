@@ -20,96 +20,116 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #------------------------------------------------------------------------------
+# pylint: disable=bad-indentation
 
 import math
-import sys
-import Table
+import table
+
+#-------------------------------------------------------------------------------
+# Universal constants
+A4_FREQ              = 440   # freq of the A above middle C (Hz)
+SEMITONES_PER_OCTAVE = 12    # Size of a musical octave in semitones
+
+
+#-------------------------------------------------------------------------------
+# Project constants (also available as globals in this file)
+
+const = table.Constants(globals())
+
+const.decl('A4_SEMITONE_INDEX', 61)     # Note index for the A above middle C (XXX not MIDI)
+const.decl('DAC_FREQ',          48000)  # Samples per second (Hz)
+const.decl('DB_RANGE',          60)     # Range for attenuation control (dB)
+const.decl('SAMPLE_BITS',       16)     # Minimum quality audio DACs support
+const.decl('FREQ_BITS',         14)     # Support full control via 2 x MIDI 7-bit values
+const.decl('FREQ_FRAC_BITS',    7)      # Support full control via a MIDI 7-bit value
+const.decl('PHASE_BITS',        32)     # Size of the phase accumulator
+const.decl('LOG2_WAVE_SIZE',    16)     # Wavetable size
+const.decl('AMP_BITS',          16)     # Amplitude
+const.decl('ATTEN_INFINITY',    0xFFFF) # Maximum attenuation
+
+# derived constants
+SAMPLE_TYPE = f'int{SAMPLE_BITS}_t'
+PHASE_TYPE  = f'uint{PHASE_BITS}_t'
+AMP_TYPE    = f'uint{AMP_BITS}_t'
+AMP_MAX     = table.unsigned_max(AMP_BITS)
+
+const.decl('SAMPLE_MAX', table.signed_max(SAMPLE_BITS), SAMPLE_TYPE)
+
+assert FREQ_BITS > FREQ_FRAC_BITS
+assert PHASE_BITS >= LOG2_WAVE_SIZE
+
+#-------------------------------------------------------------------------------
+# Wavetables
+
+SAMPLE_FORMAT = table.signed_dec_fmt(SAMPLE_BITS)  # For neat layout in the table .cpp files
+
+table.gen('sine',
+          func      = lambda i,x : int(math.sin(x * 2 * math.pi) * SAMPLE_MAX + 0.5),
+          typename  = SAMPLE_TYPE,
+          log2_size = LOG2_WAVE_SIZE,
+          fmt       = SAMPLE_FORMAT)
+
+table.gen('triangle',
+          func      = lambda i,x : int(((1 - 4 * x) if x < 0.5 else (4 * x - 3)) * SAMPLE_MAX + 0.5),
+          typename  = SAMPLE_TYPE,
+          log2_size = LOG2_WAVE_SIZE,
+          fmt       = SAMPLE_FORMAT)
+
+table.gen('ramp_up',
+          func      = lambda i,x : int((2 * x - 1) * SAMPLE_MAX + 0.5),
+          typename  = SAMPLE_TYPE,
+          log2_size = LOG2_WAVE_SIZE,
+          fmt       = SAMPLE_FORMAT)
+
+table.gen('ramp_dn',
+          func      = lambda i,x : int((1 - 2 * x) * SAMPLE_MAX + 0.5),
+          typename  = SAMPLE_TYPE,
+          log2_size = LOG2_WAVE_SIZE,
+          fmt       = SAMPLE_FORMAT)
+
+
+#-------------------------------------------------------------------------------
+# Frequency tables
 
 def index2freq(index):
-   """ Convert 14-bit table index to freq (Hz) """
-
-   A4_SEMITONE_INDEX    = 57     # Note index for the A above middle C
-   A4_FREQ              = 440    # freq of the A above middle C (Hz)
-   SEMITONES_PER_OCTAVE = 12     # Notes in a musical scale
-   FRAC_SEMITONE_BITS   = 7
-
-   scale = 1 << FRAC_SEMITONE_BITS
+   """ Convert table index to freq (Hz) """
+   scale = 1 << FREQ_FRAC_BITS
    exp   = (index - (A4_SEMITONE_INDEX * scale)) / (SEMITONES_PER_OCTAVE * scale)
    freq  = A4_FREQ * math.pow(2, exp)
-
    return freq
 
-def delta_fn(i, x):
-   """ Convert 14-bit table index to a .32-bit frequency ratio """
-
-   DAC_FREQ = 48000
+def delta_fn(i, _):
+   """ Convert table index to a .n-bit frequency ratio """
    ratio = index2freq(i) / DAC_FREQ
-   return int(ratio * (1<<32) + 0.5)
+   return int(ratio * (1 << PHASE_BITS) + 0.5)
+
+table.gen('delta',
+          func      = delta_fn,
+          typename  = PHASE_TYPE,
+          log2_size = FREQ_BITS,
+          fmt       = table.hex_fmt(PHASE_BITS))
+
+table.gen('freq_mHz',
+          func      = lambda i,x : int(index2freq(i) * 1000 + 0.5),
+          typename  = "uint32_t",
+          log2_size = FREQ_BITS,
+          fmt       = '8d')
+
+
+#-------------------------------------------------------------------------------
+# Amplitude attenuation tables
 
 def amp_fn(x):
-   DB_RANGE = 60
    return math.pow(10, (DB_RANGE / 20) * (x - 1)) if x > 0 else 0
 
-Table.gen('delta',
-          bits      = 32,
-          func      = delta_fn,
-          log2_size = 14,
-          typename  = "uint32_t",
-          prefix    = '0x',
-          fmt       = '08x')
-
-Table.gen('freq',
-          bits      = 32,
-          func      = lambda i,x : int(index2freq(i) * 1000 + 0.5),
-          log2_size = 14,
-          typename  = "uint32_t",
-          prefix    = '0x',
-          fmt       = '08x')
-
-Table.gen('sine',
-          bits      = 16,
-          func      = lambda i,x : int(math.sin(x * 2 * math.pi) * 0x7FFF + 0.5),
-          log2_size = 16,
-          typename  = "int16_t",
-          prefix    = '',
-          fmt       = '6d')
-
-Table.gen('triangle',
-          bits      = 16,
-          func      = lambda i,x : int(((1 - 4 * x) if x < 0.5 else (4 * x - 3)) * 0x7FFF + 0.5),
-          log2_size = 16,
-          typename  = "int16_t",
-          prefix    = '',
-          fmt       = '6d')
-
-Table.gen('ramp_up',
-          bits      = 16,
-          func      = lambda i,x : int((2 * x - 1) * 0x7FFF + 0.5),
-          log2_size = 16,
-          typename  = "int16_t",
-          prefix    = '',
-          fmt       = '6d')
-
-Table.gen('ramp_dn',
-          bits      = 16,
-          func      = lambda i,x : int((1 - 2 * x) * 0x7FFF + 0.5),
-          log2_size = 16,
-          typename  = "int16_t",
-          prefix    = '',
-          fmt       = '6d')
-
-Table.gen('amp',
-          bits      = 16,
-          func      = lambda i,x : int(amp_fn(x) * 0xFFFF + 0.5),
+table.gen('amp',
+          func      = lambda i,x : int(amp_fn(x) * AMP_MAX + 0.5),
+          typename  = AMP_TYPE,
           log2_size = 7,
+          fmt       = table.hex_fmt(AMP_BITS))
+
+table.gen('atten_cB',
+          func      = lambda i,x : int((-20 * math.log10(amp_fn(x)) * 10) + 0.5) if i > 0 else ATTEN_INFINITY,
           typename  = "uint16_t",
-          prefix    = '0x',
-          fmt       = '04x')
-
-Table.gen('attenuation',
-          bits      = 8,
-          func      = lambda i,x : int((20 * math.log10(amp_fn(x)) * 10 if i > 0 else 0x8000) - 0.5),
           log2_size = 7,
-          typename  = "int16_t",
-          prefix    = '',
-          fmt       = '3d')
+          fmt       = table.dec_fmt(16))

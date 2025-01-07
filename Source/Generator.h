@@ -71,21 +71,28 @@ private:
 
       case 4: osc_lft.changeWave(-1); break;
       case 5: osc_lft.changeWave(+1); break;
+      case 6: touch_sense = not touch_sense; break;
       }
    }
 
    void voiceOn(unsigned, uint8_t note_, uint8_t velocity_) override
    {
+      if (note_ < 8)
+         return;
+
       Oscillator* osc = left_note ? &osc_lft : &osc_rgt;
       left_note = not left_note;
 
-      osc->setNote(note_ - 12);
+      osc->setNote(note_ - 8);
       osc->setDetune(0);
       osc->setPhase(0);
-      osc->setAmpl(velocity_);
+
+      if (touch_sense)
+         osc->setAmpl(velocity_);
    }
 
    bool       left_note{true};
+   bool       touch_sense{true};
    Oscillator osc_lft{};
    Oscillator osc_rgt{};
 };

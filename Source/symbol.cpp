@@ -96,40 +96,40 @@ static const uint8_t BITMAP_NOISE[8] =
    0b00000
 };
 
-static const uint8_t BITMAP_DB[8] =
-{
-   0b00110,
-   0b00101,
-   0b00101,
-   0b01110,
-   0b10101,
-   0b10101,
-   0b01110,
-   0b00000
-};
-
 static const uint8_t BITMAP_INFINITY[8] =
 {
    0b00000,
+   0b00000,
    0b01010,
    0b10101,
    0b10101,
    0b01010,
    0b00000,
-   0b00000,
+   0b00000
+};
+
+static const uint8_t BITMAP_MINUS_ONE[8] =
+{
+   0b00010,
+   0b00110,
+   0b00010,
+   0b11010,
+   0b00010,
+   0b00010,
+   0b00111,
    0b00000
 };
 
 void symbolDefine(hw::Lcd& lcd)
 {
-   lcd.progChar(SYMBOL_SINE,     BITMAP_SINE);
-   lcd.progChar(SYMBOL_TRIANGLE, BITMAP_TRIANGLE);
-   lcd.progChar(SYMBOL_PULSE,    BITMAP_PULSE);
-   lcd.progChar(SYMBOL_RAMP_UP,  BITMAP_RAMP_UP);
-   lcd.progChar(SYMBOL_RAMP_DN,  BITMAP_RAMP_DN);
-   lcd.progChar(SYMBOL_NOISE,    BITMAP_NOISE);
-   lcd.progChar(SYMBOL_DB,       BITMAP_DB);
-   lcd.progChar(SYMBOL_INFINITY, BITMAP_INFINITY);
+   lcd.progChar(SYMBOL_SINE,      BITMAP_SINE);
+   lcd.progChar(SYMBOL_TRIANGLE,  BITMAP_TRIANGLE);
+   lcd.progChar(SYMBOL_PULSE,     BITMAP_PULSE);
+   lcd.progChar(SYMBOL_RAMP_UP,   BITMAP_RAMP_UP);
+   lcd.progChar(SYMBOL_RAMP_DN,   BITMAP_RAMP_DN);
+   lcd.progChar(SYMBOL_NOISE,     BITMAP_NOISE);
+   lcd.progChar(SYMBOL_INFINITY,  BITMAP_INFINITY);
+   lcd.progChar(SYMBOL_MINUS_ONE, BITMAP_MINUS_ONE);
 }
 
 #endif

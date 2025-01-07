@@ -28,19 +28,19 @@
 
 enum Symbol : char
 {
-   SYMBOL_SINE     = '~',
-   SYMBOL_TRIANGLE = '^',
-   SYMBOL_PULSE    = 'n',
-   SYMBOL_RAMP_UP  = '/',
-   SYMBOL_RAMP_DN  = '\\',
-   SYMBOL_NOISE    = '@',
-   SYMBOL_DB       = 'd',
-   SYMBOL_INFINITY = '8'
+   SYMBOL_SINE      = '~',
+   SYMBOL_TRIANGLE  = '^',
+   SYMBOL_PULSE     = 'n',
+   SYMBOL_RAMP_UP   = '/',
+   SYMBOL_RAMP_DN   = '\\',
+   SYMBOL_NOISE     = '@',
+   SYMBOL_MINUS_ONE = '-',
+   SYMBOL_INFINITY  = '8'
 };
 
 #else
 
-enum Symbol : char
+enum Symbol : unsigned char
 {
    SYMBOL_SINE = 1,
    SYMBOL_TRIANGLE,
@@ -48,7 +48,7 @@ enum Symbol : char
    SYMBOL_RAMP_UP,
    SYMBOL_RAMP_DN,
    SYMBOL_NOISE,
-   SYMBOL_DB,
+   SYMBOL_MINUS_ONE,
    SYMBOL_INFINITY
 };
 
