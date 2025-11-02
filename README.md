@@ -6,6 +6,10 @@ Audio function generator.
 
 [![Build Status](https://github.com/AnotherJohnH/picoFn/actions/workflows/build_on_push.yml/badge.svg)](https://github.com/AnotherJohnH/picoFn/actions/workflows/build_on_push.yml)
 
+## Hardware
+
+See [README](https://github.com/AnotherJohnH/Hardware/blob/main/picoX7/README.md)
+
 ## Software
 
 ### Dependencies
