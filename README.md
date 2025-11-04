@@ -1,8 +1,36 @@
 # picoFn
 
-Stereo audio function generator.
+MIDI controlled audio function generator.
 
-## Status
+## Features
+
++ Full MIDI control
++ Two channels
++ Sine, triangle, square, pulse, ramp-up, ramp-down, noise waveforms
++ Frequency range 12.97Hz (G0#) to 15.80KHz (B9)
++ Coarse tune with semitone resolution and fine tune with semitone range
++ Phase shift
++ Attenuation 0dB to 59.5dB and infinity
+
+## MIDI controls
+
+MIDI channel 1.
+
+| MIDI TYPE | MIDI Value | Output | Description |
+|-----------|------------|--------|-------------|
+| CTL |  2 | Left | Coarse freqeuncy (semitone) |
+| CTL |  3 | Left | Fine freqeuncy (semitone/128) |
+| CTL |  4 | Left | Phase shift | |
+| CTL |  5 | Left | Attenuation | |
+| PGM |  4 | Left | Waveform select down | |
+| PGM |  5 | Left | Waveform select up | |
+| CTL |  6 | Right | Coarse freqeuncy (semitone) |
+| CTL |  7 | Right | Fine freqeuncy (semitone/128) |
+| CTL |  8 | Right | Phase shift | |
+| CTL |  9 | Right | Attenuation | |
+| PGM |  0 | Right | Waveform select down | |
+| PGM |  1 | Right | Waveform select up | |
+| NON |  note | Left/Right | Coarse freqeuncy for MIDI note value |
 
 ## Hardware
 
