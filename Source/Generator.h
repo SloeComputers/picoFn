@@ -36,15 +36,15 @@ private:
    {
       switch(control_)
       {
-      case 2: osc_lft.setNote(value_);   break;
-      case 3: osc_lft.setDetune(value_); break;
-      case 4: osc_lft.setPhase(value_);  break;
-      case 5: osc_lft.setAmpl(value_);   break;
+      case 2: case 16: osc_lft.setNote(value_);   break;
+      case 3: case 17: osc_lft.setDetune(value_); break;
+      case 4: case 18: osc_lft.setPhase(value_);  break;
+      case 5: case 19: osc_lft.setAmpl(value_);   break;
 
-      case 6: osc_rgt.setNote(value_);   break;
-      case 7: osc_rgt.setDetune(value_); break;
-      case 8: osc_rgt.setPhase(value_);  break;
-      case 9: osc_rgt.setAmpl(value_);   break;
+      case 6: case 20: osc_rgt.setNote(value_);   break;
+      case 7: case 21: osc_rgt.setDetune(value_); break;
+      case 8: case 22: osc_rgt.setPhase(value_);  break;
+      case 9: case 23: osc_rgt.setAmpl(value_);   break;
       }
    }
 

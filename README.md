@@ -14,23 +14,24 @@ MIDI controlled audio function generator.
 
 ## MIDI controls
 
-MIDI channel 1.
+| MIDI chan | MIDI type | MIDI Value | Output | Description |
+|-----------|-----------|------------|--------|-------------|
+| 1 | CTL |  2, 16 | Left | Coarse freqeuncy (semitone) |
+| 1 | CTL |  3, 17 | Left | Fine freqeuncy (semitone/128) |
+| 1 | CTL |  4, 18 | Left | Phase shift / pulse width | |
+| 1 | CTL |  5, 19 | Left | Attenuation (dB) | |
+| 1 | PGM |  4 | Left | Waveform select down | |
+| 1 | PGM |  5 | Left | Waveform select up | |
+| 1 | CTL |  6, 20 | Right | Coarse freqeuncy (semitone) |
+| 1 | CTL |  7, 21 | Right | Fine freqeuncy (semitone/128) |
+| 1 | CTL |  8, 22 | Right | Phase shift / pulse width | |
+| 1 | CTL |  9, 24 | Right | Attenuation (dB) | |
+| 1 | PGM |  0 | Right | Waveform select down | |
+| 1 | PGM |  1 | Right | Waveform select up | |
+| 1 | NON |  note | Left/Right | Coarse frequency for MIDI note value |
+| 1 | PGM |  6 | Left+Right | Toggle velocity sense for NON events |
 
-| MIDI TYPE | MIDI Value | Output | Description |
-|-----------|------------|--------|-------------|
-| CTL |  2 | Left | Coarse freqeuncy (semitone) |
-| CTL |  3 | Left | Fine freqeuncy (semitone/128) |
-| CTL |  4 | Left | Phase shift | |
-| CTL |  5 | Left | Attenuation | |
-| PGM |  4 | Left | Waveform select down | |
-| PGM |  5 | Left | Waveform select up | |
-| CTL |  6 | Right | Coarse freqeuncy (semitone) |
-| CTL |  7 | Right | Fine freqeuncy (semitone/128) |
-| CTL |  8 | Right | Phase shift | |
-| CTL |  9 | Right | Attenuation | |
-| PGM |  0 | Right | Waveform select down | |
-| PGM |  1 | Right | Waveform select up | |
-| NON |  note | Left/Right | Coarse freqeuncy for MIDI note value |
+NOTE: These controls have been selected to work well with the AKAI MPKmini or AKAI MIDImix controllers.
 
 ## Hardware
 
