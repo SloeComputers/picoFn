@@ -1,12 +1,12 @@
 # picoFn
 
-Audio function generator.
+Stereo audio function generator.
 
 ## Status
 
-[![Build Status](https://github.com/AnotherJohnH/picoFn/actions/workflows/build_on_push.yml/badge.svg)](https://github.com/AnotherJohnH/picoFn/actions/workflows/build_on_push.yml)
-
 ## Hardware
+
+Re-uses the [picoX7](https://github.com/AnotherJohnH/picoX7) hardware platform.
 
 See [README](https://github.com/AnotherJohnH/Hardware/blob/main/picoX7/README.md)
 
@@ -24,11 +24,11 @@ See [README](https://github.com/AnotherJohnH/Hardware/blob/main/picoX7/README.md
 This repo uses git sub-modules, so checkout using --recurse to clone all the
 dependent source...
 
-    git clone --recurse https://github.com/AnotherJohnH/picoFn.git
+    git clone --recurse-submodules https://github.com/AnotherJohnH/picoFn.git
 
 or
 
-    git clone --recurse ssh://git@github.com/AnotherJohnH/picoFn.git
+    git clone --recurse-submodules ssh://git@github.com/AnotherJohnH/picoFn.git
 
 ### Build
 
@@ -45,7 +45,7 @@ Build directly using cmake...
 
 Flashable image will be found under the build sub directory here...
 
-    .../Source/picoFn.uf2
+    .../Source/picoFn_I2S_DAC.uf2
 
 ## License
 
