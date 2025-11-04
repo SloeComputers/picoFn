@@ -17,7 +17,7 @@ SEMITONES_PER_OCTAVE = 12    # Size of a musical octave in semitones
 const = table.Constants(globals())
 
 const.decl('A4_SEMITONE_INDEX', 61)     # Note index for the A above middle C (XXX not MIDI)
-const.decl('DAC_FREQ',          48000)  # Samples per second (Hz)
+const.decl('DAC_FREQ',          96000)  # Samples per second (Hz)
 const.decl('DB_RANGE',          60)     # Range for attenuation control (dB)
 const.decl('SAMPLE_BITS',       16)     # Minimum quality audio DACs support
 const.decl('FREQ_BITS',         14)     # Support full control via 2 x MIDI 7-bit values
