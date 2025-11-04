@@ -137,7 +137,6 @@ int main()
          char buffer[17];
 
          generator.getInfo(/* left */ line == 0, buffer);
-         printf("%s\n", buffer);
 
          lcd.move(0, line);
          lcd.print(buffer);

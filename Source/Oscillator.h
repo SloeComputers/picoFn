@@ -192,7 +192,7 @@ private:
 
    int16_t triangle() const
    {
-      return table_triangle[phase_0_32 >> PHASE_SHIFT];
+      return table_triangle[(phase_0_32 + offset_0_32)>> PHASE_SHIFT];
    }
 
    int16_t pulse () const
@@ -204,12 +204,12 @@ private:
 
    int16_t ramp_up() const
    {
-      return table_ramp_up[phase_0_32 >> PHASE_SHIFT];
+      return table_ramp_up[(phase_0_32 + offset_0_32)>> PHASE_SHIFT];
    }
 
    int16_t ramp_dn() const
    {
-      return table_ramp_dn[phase_0_32 >> PHASE_SHIFT];
+      return table_ramp_dn[(phase_0_32 + offset_0_32)>> PHASE_SHIFT];
    }
 
    int16_t noise()

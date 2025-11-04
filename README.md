@@ -6,14 +6,13 @@ Stereo audio function generator.
 
 ## Hardware
 
-Re-uses the [picoX7](https://github.com/AnotherJohnH/picoX7) hardware platform.
-
-See [README](https://github.com/AnotherJohnH/Hardware/blob/main/picoX7/README.md)
+Re-uses the [picoX7](https://github.com/AnotherJohnH/picoX7) hardware platform. See [README](https://github.com/AnotherJohnH/Hardware/blob/main/picoX7/README.md)
 
 ## Software
 
 ### Dependencies
 
++ https://github.com/AnotherJohnH/Hardware
 + https://github.com/AnotherJohnH/Platform
 + arm-none-eabi-gcc
 + cmake
@@ -21,7 +20,7 @@ See [README](https://github.com/AnotherJohnH/Hardware/blob/main/picoX7/README.md
 
 ### Checkout
 
-This repo uses git sub-modules, so checkout using --recurse to clone all the
+This repo uses git sub-modules, so checkout using --recurse-submodules to clone all the
 dependent source...
 
     git clone --recurse-submodules https://github.com/AnotherJohnH/picoFn.git
