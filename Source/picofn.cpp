@@ -81,7 +81,7 @@ void MTL::Audio::getSamples(uint32_t* buffer, unsigned n)
    hwTick();
 }
 
-#elif defined(HW_DAC_NATIVE)
+#else
 
 template<>
 void hw::Audio<SAMPLES_PER_TICK>::getSamples(int16_t* buffer, unsigned n)
@@ -104,8 +104,6 @@ static void hwTick()
 {
    phys_midi.tick();
    usb.tick();
-
-   led = generator.isAnyVoiceOn();
 }
 
 
@@ -141,6 +139,8 @@ int main()
          lcd.move(0, line);
          lcd.print(buffer);
       }
+
+      led = generator.isAnyVoiceOn();
 
       usleep(100000);
    }
