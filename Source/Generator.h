@@ -17,8 +17,8 @@ public:
    {
    }
 
-   int16_t left()  { return osc_lft(); }
-   int16_t right() { return osc_rgt(); }
+   int16_t left()  { return int16_t(osc_lft() * 0x7fff); }
+   int16_t right() { return int16_t(osc_rgt() * 0x7fff); }
 
    void getInfo(bool left_, char* buffer16_) const
    {
@@ -37,15 +37,15 @@ private:
       // 1st col, AKAI MPKmini, 2nd col, AKAI MIDImix
       switch(control_)
       {
-      case 2: case 16: osc_lft.setNote(value_);   break; // K1  #1 TOP
-      case 3: case 17: osc_lft.setDetune(value_); break; // K2  #1 MID
-      case 4: case 18: osc_lft.setPhase(value_);  break; // K3  #1 BTM
-      case 5: case 19: osc_lft.setAmpl(value_);   break; // K4  #1 SLIDER
+      case 2: case 16: osc_lft.noteOn(value_ + 8); break; // K1  #1 TOP
+      case 3: case 17: osc_lft.setDetune(value_);  break; // K2  #1 MID
+      case 4: case 18: osc_lft.setPhase(value_);   break; // K3  #1 BTM
+      case 5: case 19: osc_lft.setAmpl(value_);    break; // K4  #1 SLIDER
 
-      case 6: case 20: osc_rgt.setNote(value_);   break; // K5  #2 TOP
-      case 7: case 21: osc_rgt.setDetune(value_); break; // K6  #2 MID
-      case 8: case 22: osc_rgt.setPhase(value_);  break; // K7  #2 BTM
-      case 9: case 23: osc_rgt.setAmpl(value_);   break; // K8  #2 SLIDER
+      case 6: case 20: osc_rgt.noteOn(value_ + 8); break; // K5  #2 TOP
+      case 7: case 21: osc_rgt.setDetune(value_);  break; // K6  #2 MID
+      case 8: case 22: osc_rgt.setPhase(value_);   break; // K7  #2 BTM
+      case 9: case 23: osc_rgt.setAmpl(value_);    break; // K8  #2 SLIDER
       }
    }
 
@@ -78,7 +78,7 @@ private:
       Oscillator* osc = left_note ? &osc_lft : &osc_rgt;
       left_note = not left_note;
 
-      osc->setNote(note_ - 8);
+      osc->noteOn(note_);
       osc->setDetune(0);
       osc->setPhase(0);
    }

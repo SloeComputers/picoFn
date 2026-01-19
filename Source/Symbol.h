@@ -13,11 +13,11 @@ enum Symbol : char
 {
    SYMBOL_SINE      = '~',
    SYMBOL_TRIANGLE  = '^',
-   SYMBOL_PULSE     = 'n',
    SYMBOL_RAMP_UP   = '/',
    SYMBOL_RAMP_DN   = '\\',
+   SYMBOL_PULSE     = 'n',
+   SYMBOL_SQUARE    = 'S',
    SYMBOL_NOISE     = '@',
-   SYMBOL_MINUS_ONE = '-',
    SYMBOL_INFINITY  = '8'
 };
 
@@ -27,11 +27,11 @@ enum Symbol : unsigned char
 {
    SYMBOL_SINE = 1,
    SYMBOL_TRIANGLE,
-   SYMBOL_PULSE,
    SYMBOL_RAMP_UP,
    SYMBOL_RAMP_DN,
+   SYMBOL_PULSE,
+   SYMBOL_SQUARE,
    SYMBOL_NOISE,
-   SYMBOL_MINUS_ONE,
    SYMBOL_INFINITY
 };
 
