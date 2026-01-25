@@ -172,6 +172,10 @@ public:
    {
       SIG::Signal sample;
 
+      SIG::UPhase delta = noteLookup(unsigned(note_slew()));
+      for(unsigned i = 0; i < 6; ++i)
+         osc[i]->setDelta(delta);
+
       (void) phase_ref();
 
       switch(wave)
@@ -190,17 +194,18 @@ public:
    }
 
 private:
+   static SIG::UPhase noteLookup(unsigned note_7_)
+   {
+      if (note_7_ < 0x4000)
+         return SIG::noteLookup_7(note_7_);
+
+      note_7_ -= 0x80 * 12;
+      return SIG::noteLookup_7(note_7_) << 1;
+   }
+
    void updateFreq()
    {
-      SIG::UPhase delta;
-
-      if (note < 128)
-         delta = SIG::noteLookup(note, detune7);
-      else
-         delta = SIG::noteLookup(note - 12, detune7) << 1;
-
-      for(unsigned i = 0; i < 6; ++i)
-         osc[i]->setDelta(delta);
+      note_slew = (note << 7) | detune7;
    }
 
    Wave     wave{SINE};
@@ -216,6 +221,7 @@ private:
    SIG::Osc::Square   phase_ref{};
    SIG::Osc::Noise    noise{};
    SIG::ExpSlew       gain{0.1f};
+   SIG::ExpSlew       note_slew{0.1f};
 
    SIG::Osc::Base* osc[6] =
    {

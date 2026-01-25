@@ -9,14 +9,13 @@
 + Sine, triangle, square, pulse, ramp-up, ramp-down, noise waveforms
 + Samples rate 96 KHz
 + Frequency range 13Hz to 20KHz
-+ Coarse tune with semitone resolution G0# to B9
++ Coarse tune with semitone resolution G-1# to D10
 + Fine tune with semitone range
 + Phase shift / pulse width
 + Attenuation 0dB to 60dB and infinity
 
 ## To Do
 
-+ Proper sample filter to reduce noise and avoid aliasing with non-sine waveforms
 + Find and fix occasional audio glitch
 + Modulation, AM, FM and sweeps
 + Try some higher sample rates
