@@ -22,6 +22,11 @@ public:
       SINE, TRIANGLE, RAMP_UP, RAMP_DN, SQUARE, PULSE, NOISE, NUM_WAVE
    };
 
+   enum Modulation
+   {
+      NONE, AM, FM, SUM
+   };
+
    Oscillator()
    {
       setWave(SINE);
@@ -38,54 +43,85 @@ public:
       Symbol wave_symbol;
       switch(wave)
       {
-      case Oscillator::SINE:     wave_symbol = SYMBOL_SINE;     break;
-      case Oscillator::TRIANGLE: wave_symbol = SYMBOL_TRIANGLE; break;
-      case Oscillator::RAMP_UP:  wave_symbol = SYMBOL_RAMP_UP;  break;
-      case Oscillator::RAMP_DN:  wave_symbol = SYMBOL_RAMP_DN;  break;
-      case Oscillator::SQUARE:   wave_symbol = SYMBOL_SQUARE;   break;
-      case Oscillator::PULSE:    wave_symbol = SYMBOL_PULSE;    break;
-      case Oscillator::NOISE:    wave_symbol = SYMBOL_NOISE;    break;
-      default:                   wave_symbol = Symbol(' ');     break;
+      case SINE:     wave_symbol = SYMBOL_SINE;     break;
+      case TRIANGLE: wave_symbol = SYMBOL_TRIANGLE; break;
+      case RAMP_UP:  wave_symbol = SYMBOL_RAMP_UP;  break;
+      case RAMP_DN:  wave_symbol = SYMBOL_RAMP_DN;  break;
+      case SQUARE:   wave_symbol = SYMBOL_SQUARE;   break;
+      case PULSE:    wave_symbol = SYMBOL_PULSE;    break;
+      case NOISE:    wave_symbol = SYMBOL_NOISE;    break;
+      default:       wave_symbol = Symbol(' ');     break;
+      }
+
+      // Modulation
+      char mod_symbol;
+      switch(mod)
+      {
+      case NONE: mod_symbol = ' '; break;
+      case AM:   mod_symbol = 'A'; break;
+      case FM:   mod_symbol = 'F'; break;
+      case SUM:  mod_symbol = '+'; break;
       }
 
       // Frequency
-      char     freq_text[7];
-      unsigned index    = ((note - 8 ) << 7) | detune7;
-      unsigned freq_mHz = table_freq_mHz[index];
-      unsigned units    = freq_mHz / 1000;
-      if (units < 100)
+      char freq_text[7];
+      if (wave == NOISE)
       {
-         unsigned frac = (freq_mHz % 1000) / 10;
-         snprintf(freq_text, sizeof(freq_text), "%2u.%02u ", units, frac);
-      }
-      else if (units < 1000)
-      {
-         unsigned frac = (freq_mHz % 1000) / 100;
-         snprintf(freq_text, sizeof(freq_text), "%3u.%u ", units, frac);
-      }
-      else if (units < 10000)
-      {
-         units = units / 1000;
-         unsigned frac = (freq_mHz % 1000000) / 1000;
-         snprintf(freq_text, sizeof(freq_text), "%u.%03uk", units, frac);
+         strcpy(freq_text, "----- ");
       }
       else
       {
-         units = units / 1000;
-         unsigned frac = (freq_mHz % 1000000) / 10000;
-         snprintf(freq_text, sizeof(freq_text), "%2u.%02uk", units, frac);
+         signed   index    = ((note - 8 ) << 7) | detune7;
+         unsigned freq_mHz = table_freq_mHz[index];
+         if (lfo)
+         {
+            freq_mHz = freq_mHz / (1 << LFO_OCTAVE_OFFSET);
+         }
+         unsigned units = freq_mHz / 1000;
+         if (units < 10)
+         {
+            unsigned frac = freq_mHz % 1000;
+            snprintf(freq_text, sizeof(freq_text), "%1u.%03u ", units, frac);
+         }
+         else if (units < 100)
+         {
+            unsigned frac = (freq_mHz % 1000) / 10;
+            snprintf(freq_text, sizeof(freq_text), "%2u.%02u ", units, frac);
+         }
+         else if (units < 1000)
+         {
+            unsigned frac = (freq_mHz % 1000) / 100;
+            snprintf(freq_text, sizeof(freq_text), "%3u.%u ", units, frac);
+         }
+         else if (units < 10000)
+         {
+            units = units / 1000;
+            unsigned frac = (freq_mHz % 1000000) / 1000;
+            snprintf(freq_text, sizeof(freq_text), "%u.%03uk", units, frac);
+         }
+         else
+         {
+            units = units / 1000;
+            unsigned frac = (freq_mHz % 1000000) / 10000;
+            snprintf(freq_text, sizeof(freq_text), "%2u.%02uk", units, frac);
+         }
       }
 
       // Musical note
-      char   note_text[4];
-      signed octave = (note / 12) - 1;
-      if (detune7 == 0)
+      char note_text[4];
+      if ((detune7 == 0) && (wave != NOISE))
       {
-         unsigned semitone = (note + 12) % 12;
+         signed      octave      = (note / SEMITONES_PER_OCTAVE) - 1;
+         unsigned    semitone    = (note + SEMITONES_PER_OCTAVE) % SEMITONES_PER_OCTAVE;
          const char* NOTE_LETTER = "CCDDEFFGGAAB";
          const char* NOTE_SHARP  = " # #  # # # ";
 
-         if ((octave < 0) || (octave > 9))
+         if (lfo)
+            octave -= LFO_OCTAVE_OFFSET;
+
+         if (octave < -1)
+            snprintf(note_text, sizeof(note_text), "-- ");
+         else if ((octave < 0) || (octave > 9))
             snprintf(note_text, sizeof(note_text), "%c %c",
                      NOTE_LETTER[semitone], NOTE_SHARP[semitone]);
          else
@@ -110,8 +146,8 @@ public:
          snprintf(atten_text, sizeof(atten_text), "%2u.%u", db, db_tenths);
 
 
-      snprintf(buffer16_, 17, "%c %6s %3s%4s",
-               wave_symbol, freq_text, note_text, atten_text);
+      snprintf(buffer16_, 17, "%c%c%6s %3s%4s",
+               wave_symbol, mod_symbol, freq_text, note_text, atten_text);
    }
 
    void sync()
@@ -135,6 +171,21 @@ public:
          setWave(wave - 1);
       else if ((delta_ > 0) && (wave < NOISE))
          setWave(wave + 1);
+   }
+
+   void changeMod(signed delta_)
+   {
+      if ((delta_ < 0) && (mod > NONE))
+         mod = Modulation(mod - 1);
+      else if ((delta_ > 0) && (mod < SUM))
+         mod = Modulation(mod + 1);
+   }
+
+   void toggleLFO()
+   {
+      lfo = not lfo;
+
+      updateFreq();
    }
 
    void setDetune(uint8_t detune7_)
@@ -164,15 +215,26 @@ public:
    void noteOn(uint8_t note_, uint8_t velocity_ = 0)
    {
       note = note_;
+
       updateFreq();
    }
 
    //! Return next sample for this oscillator
-   SIG::Signal operator()()
+   SIG::Signal operator()(SIG::Signal modulation_)
    {
       SIG::Signal sample;
+      SIG::Signal n = note_slew();
 
-      SIG::UPhase delta = noteLookup(unsigned(note_slew()));
+      if (mod == FM)
+         n += modulation_ * 48.0 * 128.0f;
+
+      SIG::UPhase delta = noteLookup(unsigned(n));
+
+      if (lfo)
+      {
+         delta >>= LFO_OCTAVE_OFFSET;
+      }
+
       for(unsigned i = 0; i < 6; ++i)
          osc[i]->setDelta(delta);
 
@@ -190,6 +252,11 @@ public:
       default:       sample = 0.0f;       break;
       }
 
+      if (mod == AM)
+         sample = sample * (modulation_ + 1.0f) * 0.5f;
+      else if (mod == SUM)
+         sample = (sample + modulation_) * 0.5f;
+
       return gain(sample);
    }
 
@@ -199,7 +266,7 @@ private:
       if (note_7_ < 0x4000)
          return SIG::noteLookup_7(note_7_);
 
-      note_7_ -= 0x80 * 12;
+      note_7_ -= 0x80 * SEMITONES_PER_OCTAVE;
       return SIG::noteLookup_7(note_7_) << 1;
    }
 
@@ -208,10 +275,15 @@ private:
       note_slew = (note << 7) | detune7;
    }
 
-   Wave     wave{SINE};
-   uint8_t  note{};       //!< MIDI note number (can extend above 127)
-   uint8_t  detune7{};    //!< MIDI note fraction (7 bit)
-   uint8_t  amp_index{};
+   static const unsigned SEMITONES_PER_OCTAVE = 12;
+   static const unsigned LFO_OCTAVE_OFFSET    = 7;
+
+   Wave       wave{SINE};
+   Modulation mod{NONE};
+   bool       lfo{false};
+   uint8_t    note{};       //!< MIDI note number (can extend above 127)
+   uint8_t    detune7{};    //!< MIDI note fraction (7 bit)
+   uint8_t    amp_index{};
 
    SIG::Osc::Sine     sine{};
    SIG::Osc::Triangle triangle{};

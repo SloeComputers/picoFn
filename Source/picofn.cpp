@@ -61,7 +61,9 @@ void MTL::Audio::getSamples(uint32_t* buffer, unsigned n)
 {
    for(unsigned i = 0; i < n; i++)
    {
-      buffer[i] = (generator.left() << 16) | (generator.right() & 0xFFFF);
+      int16_t left, right;
+      generator.sample(left, right);
+      buffer[i] = (uint32_t(left) << 16) | (right & 0xFFFF);
    }
 
    hwTick();
@@ -75,7 +77,9 @@ void MTL::Audio::getSamples(uint32_t* buffer, unsigned n)
 {
    for(unsigned i = 0; i < n; i++)
    {
-      buffer[i] = audio.packSamples(generator.left(), generator.right());
+      int16_t left, right;
+      generator.sample(left, right);
+      buffer[i] = audio.packSamples(left, right);
    }
 
    hwTick();
@@ -90,8 +94,10 @@ void hw::Audio<SAMPLES_PER_TICK>::getSamples(int16_t* buffer, unsigned n)
 
    for(unsigned i = 0; i < n; i += 2)
    {
-      buffer[i]     = generator.left();
-      buffer[i + 1] = generator.right();
+      int16_t left, right;
+      generator.sample(left, right);
+      buffer[i]     = left;
+      buffer[i + 1] = right;
    }
 
    hwTick();

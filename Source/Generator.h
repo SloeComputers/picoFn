@@ -17,8 +17,14 @@ public:
    {
    }
 
-   int16_t left()  { return int16_t(osc_lft() * 0x7fff); }
-   int16_t right() { return int16_t(osc_rgt() * 0x7fff); }
+   void sample(int16_t& left_, int16_t& right_)
+   {
+      SIG::Signal left  = osc_lft(0.0);
+      SIG::Signal right = osc_rgt(left);
+
+      left_  = int16_t(left  * 0x7FFF);
+      right_ = int16_t(right * 0x7FFF);
+   }
 
    void getInfo(bool left_, char* buffer16_) const
    {
@@ -66,13 +72,16 @@ private:
       // AKAI MIDImix
       switch(note_)
       {
-      case 3: osc_lft.changeWave(-1); break; // #1 MUTE
-      case 1: osc_lft.changeWave(+1); break; // #1 REC ARM
-      case 6: osc_rgt.changeWave(-1); break; // #2 MUTE
-      case 4: osc_rgt.changeWave(+1); break; // #2 REC ARM
+      case 3:  osc_lft.changeWave(-1); break; // #1 MUTE
+      case 1:  osc_lft.changeWave(+1); break; // #1 REC ARM
+      case 6:  osc_rgt.changeWave(-1); break; // #2 MUTE
+      case 4:  osc_rgt.changeWave(+1); break; // #2 REC ARM
+      case 7:  osc_rgt.changeMod(+1);  break; // #3 MUTE
+      case 9:  osc_rgt.changeMod(-1);  break; // #3 REC ARM
+      case 10: osc_lft.toggleLFO();    break; // #4 MUTE
       }
 
-      if (note_ < 8)
+      if (note_ <= 12)
          return;
 
       Oscillator* osc = left_note ? &osc_lft : &osc_rgt;

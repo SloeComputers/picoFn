@@ -17,7 +17,6 @@
 ## To Do
 
 + Find and fix occasional audio glitch
-+ Modulation, AM, FM and sweeps
 + Try some higher sample rates
 
 ## MIDI controls
