@@ -24,7 +24,7 @@ public:
 
    enum Modulation
    {
-      NONE, AM, FM, SUM
+      NONE, AM, RM, FM, PWM, SUM
    };
 
    Oscillator()
@@ -59,7 +59,9 @@ public:
       {
       case NONE: mod_symbol = ' '; break;
       case AM:   mod_symbol = 'A'; break;
+      case RM:   mod_symbol = 'R'; break;
       case FM:   mod_symbol = 'F'; break;
+      case PWM:  mod_symbol = 'W'; break;
       case SUM:  mod_symbol = '+'; break;
       }
 
@@ -227,6 +229,8 @@ public:
 
       if (mod == FM)
          n += modulation_ * 48.0 * 128.0f;
+      else if (mod == PWM)
+         pulse.setWidth(modulation_);
 
       SIG::UPhase delta = noteLookup(unsigned(n));
 
@@ -254,6 +258,8 @@ public:
 
       if (mod == AM)
          sample = sample * (modulation_ + 1.0f) * 0.5f;
+      else if (mod == RM)
+         sample = sample * modulation_;
       else if (mod == SUM)
          sample = (sample + modulation_) * 0.5f;
 
