@@ -6,17 +6,17 @@
 
 + Full MIDI control
 + Two channels
-+ Sine, triangle, square, pulse, ramp-up, ramp-down, noise waveforms
-+ Samples rate 96 KHz
-+ Frequency range 13Hz to 20KHz
++ Sine, triangle, ramp-up, ramp-down, square, pulse, noise waveforms
++ Sample rate 96 KHz
++ Frequency range 0.1Hz to 20KHz
 + Coarse tune with semitone resolution G-1# to D10
 + Fine tune with semitone range
 + Phase shift / pulse width
 + Attenuation 0dB to 60dB and infinity
++ Modulation/mix of right channel by/with left - Amplitude (AM), Ring (RM), Frequency (FM), Pulse Width (PWM), Mix
 
 ## To Do
 
-+ Find and fix occasional audio glitch
 + Try some higher sample rates
 
 ## MIDI controls
@@ -31,6 +31,7 @@
 | 1 | PGM |  5 | Left | Waveform select up | |
 | 1 | NON |  1 | Left | Waveform select down | |
 | 1 | NON |  3 | Left | Waveform select up | |
+| 1 | NON | 10 | Left | Toggle LFO mode | 0.101 Hz - 151.5 Hz |
 | 1 | CTL |  6, 20 | Right | Coarse freqeuncy (semitone) |
 | 1 | CTL |  7, 21 | Right | Fine freqeuncy (semitone/128) |
 | 1 | CTL |  8, 22 | Right | Phase shift / pulse width | |
@@ -39,6 +40,8 @@
 | 1 | PGM |  1 | Right | Waveform select up | |
 | 1 | NON |  4 | Right | Waveform select down | |
 | 1 | NON |  6 | Right | Waveform select up | |
+| 1 | NON |  7 | Right | Modulation select up | |
+| 1 | NON |  9 | Right | Modulation select down | |
 | 1 | NON |  note | Left/Right | Coarse frequency for MIDI note value |
 
 NOTE: These controls have been selected to work with the AKAI MPKmini or AKAI MIDImix controllers.

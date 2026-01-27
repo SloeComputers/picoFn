@@ -76,8 +76,10 @@ private:
       case 1:  osc_lft.changeWave(+1); break; // #1 REC ARM
       case 6:  osc_rgt.changeWave(-1); break; // #2 MUTE
       case 4:  osc_rgt.changeWave(+1); break; // #2 REC ARM
+
       case 7:  osc_rgt.changeMod(+1);  break; // #3 MUTE
       case 9:  osc_rgt.changeMod(-1);  break; // #3 REC ARM
+
       case 10: osc_lft.toggleLFO();    break; // #4 MUTE
       }
 
