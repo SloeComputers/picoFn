@@ -4,7 +4,7 @@
 
 ## Features
 
-+ Full MIDI control
++ Full MIDI control - via MIDI over USB or physical MIDI
 + Two channels
 + Sine, triangle, ramp-up, ramp-down, square, pulse, noise waveforms
 + Sample rate 96 KHz
@@ -49,6 +49,31 @@ NOTE: These controls have been selected to work with the AKAI MPKmini or AKAI MI
 ## Hardware
 
 Re-uses the [picoX7](https://github.com/AnotherJohnH/picoX7) hardware platform. See [README](https://github.com/AnotherJohnH/Hardware/blob/main/picoX7/README.md)
+
+```
+                   +-----------+
+(Debug) TX UART <- |  1     40 | <> vbus +5v
+                   |  2     39 | <> vsys
+            gnd ## |  3     38 | ## gnd
+                   |  4     37 | <- 3v3-en
+                   |  5     36 | -> 3v3
+                   |  6     35 | <- adc-vref
+                   |  7     34 | -> I2S LRCLK
+            gnd ## |  8     33 | ## agnd
+                   |  9     32 | -> I2S SCLK
+                   | 10     31 | -> I2S SD
+                   | 11     30 | <- run
+                   | 12     29 |    
+            gnd ## | 13     28 | ## gnd
+                   | 14     27 | <- UART RX (MIDI in)
+                   | 15     26 |    
+                   | 16     25 | -> I2C SCL (16x2 LCD)
+                   | 17     24 | -> I2C SDA (16x2 LCD)
+            gnd ## | 18     23 | ## gnd
+                   | 19     22 |    
+                   | 20     21 |    
+                   +-----------+
+```
 
 ## Software
 
