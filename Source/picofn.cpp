@@ -21,7 +21,7 @@ static const bool     MIDI_DEBUG       = false;
 
 
 static hw::FilePortal file_portal{"picoFn",
-                                  "https://github.com/AnotherJohnH/picoFn"};
+                                  "https://github.com/SloeComputers/picoFn"};
 static Generator  generator{};
 
 

@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.24)
 
 project(picoFn
         LANGUAGES CXX C ASM
-        VERSION 0.03)
+        VERSION 0.04)
 
 include(CTest)
 

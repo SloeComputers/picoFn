@@ -48,7 +48,7 @@ NOTE: These controls have been selected to work with the AKAI MPKmini or AKAI MI
 
 ## Hardware
 
-Re-uses the [picoX7](https://github.com/AnotherJohnH/picoX7) hardware platform. See [README](https://github.com/AnotherJohnH/Hardware/blob/main/picoX7/README.md)
+Re-uses the [picoX7](https://github.com/SloeComputers/picoX7) hardware platform. See [README](https://github.com/SloeComputers/Hardware/blob/main/picoX7/README.md)
 
 ```
                    +-----------+
@@ -79,8 +79,8 @@ Re-uses the [picoX7](https://github.com/AnotherJohnH/picoX7) hardware platform. 
 
 ### Dependencies
 
-+ https://github.com/AnotherJohnH/Hardware
-+ https://github.com/AnotherJohnH/Platform
++ https://github.com/SloeComputers/Hardware
++ https://github.com/SloeComputers/Platform
 + arm-none-eabi-gcc
 + cmake
 + ninja (make works too)
@@ -90,11 +90,11 @@ Re-uses the [picoX7](https://github.com/AnotherJohnH/picoX7) hardware platform. 
 This repo uses git sub-modules, so checkout using --recurse-submodules to clone all the
 dependent source...
 
-    git clone --recurse-submodules https://github.com/AnotherJohnH/picoFn.git
+    git clone --recurse-submodules https://github.com/SloeComputers/picoFn.git
 
 or
 
-    git clone --recurse-submodules ssh://git@github.com/AnotherJohnH/picoFn.git
+    git clone --recurse-submodules ssh://git@github.com/SloeComputers/picoFn.git
 
 ### Build
 
