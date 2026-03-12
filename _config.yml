@@ -1,0 +1,4 @@
+theme: jekyll-theme-slate
+title: picoFn
+description: A Sloe Computers Project
+exclude: Platform
