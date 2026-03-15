@@ -5,9 +5,13 @@
 
 #pragma once
 
-#include "STB/MIDIInstrument.h"
+#include "MIDI/Instrument.h"
+#include "MIDI/Controller.h"
 
 #include "Oscillator.h"
+
+namespace MX = Akai::MIDImix;
+namespace MK = Akai::MPKmini;
 
 class Generator : public MIDI::Instrument
 {
@@ -40,18 +44,17 @@ public:
 private:
    void voiceControl(unsigned voice_, uint8_t control_, uint8_t value_) override
    {
-      // 1st col, AKAI MPKmini, 2nd col, AKAI MIDImix
       switch(control_)
       {
-      case 2: case 16: osc_lft.noteOn(value_ + 8); break; // K1  #1 TOP
-      case 3: case 17: osc_lft.setDetune(value_);  break; // K2  #1 MID
-      case 4: case 18: osc_lft.setPhase(value_);   break; // K3  #1 BTM
-      case 5: case 19: osc_lft.setAmpl(value_);    break; // K4  #1 SLIDER
+      case MK::K1: case MX::TOP1: osc_lft.noteOn(value_ + 8); break;
+      case MK::K2: case MX::MID1: osc_lft.setDetune(value_);  break;
+      case MK::K3: case MX::BTM1: osc_lft.setPhase(value_);   break;
+      case MK::K4: case MX::LVL1: osc_lft.setAmpl(value_);    break;
 
-      case 6: case 20: osc_rgt.noteOn(value_ + 8); break; // K5  #2 TOP
-      case 7: case 21: osc_rgt.setDetune(value_);  break; // K6  #2 MID
-      case 8: case 22: osc_rgt.setPhase(value_);   break; // K7  #2 BTM
-      case 9: case 23: osc_rgt.setAmpl(value_);    break; // K8  #2 SLIDER
+      case MK::K5: case MX::TOP2: osc_rgt.noteOn(value_ + 8); break;
+      case MK::K6: case MX::MID2: osc_rgt.setDetune(value_);  break;
+      case MK::K7: case MX::BTM2: osc_rgt.setPhase(value_);   break;
+      case MK::K8: case MX::LVL2: osc_rgt.setAmpl(value_);    break;
       }
    }
 
