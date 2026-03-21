@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "Hardware/picoX7/Config.h"
+#include "HWR/picoX7/Config.h"
 
 #if defined(HW_LCD_NONE)
 
