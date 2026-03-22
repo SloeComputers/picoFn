@@ -103,7 +103,7 @@ static const uint8_t BITMAP_INFINITY[8] =
    0b00000
 };
 
-void symbolDefine(hw::Lcd& lcd)
+void symbolDefine(HWR::Lcd& lcd)
 {
    lcd.progChar(SYMBOL_SINE,      BITMAP_SINE);
    lcd.progChar(SYMBOL_TRIANGLE,  BITMAP_TRIANGLE);

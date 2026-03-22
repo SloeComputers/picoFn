@@ -20,36 +20,36 @@ static const unsigned SAMPLES_PER_TICK = DAC_FREQ / TICK_RATE;  //!< DAC buffer 
 static const bool     MIDI_DEBUG       = false;
 
 
-static hw::FilePortal file_portal{"picoFn",
+static HWR::FilePortal file_portal{"picoFn",
                                   "https://github.com/SloeComputers/picoFn"};
 static Generator  generator{};
 
 
 // --- Physical MIDI -----------------------------------------------------------
 
-static hw::PhysMidi phys_midi{};
+static HWR::PhysMidi phys_midi{};
 
 
 // --- USB MIDI ----------------------------------------------------------------
 
-static hw::UsbFileMidi usb{0x91C0, "picoFn", file_portal};
+static HWR::UsbFileMidi usb{0x91C0, "picoFn", file_portal};
 
 extern "C" void IRQ_USBCTRL() { usb.irq(); }
 
 
 // --- 16x2 LCD display --------------------------------------------------------
 
-static hw::Lcd lcd{};
+static HWR::Lcd lcd{};
 
 
 // --- LED ---------------------------------------------------------------------
 
-static hw::Led led{};
+static HWR::Led led{};
 
 
 // --- DAC ---------------------------------------------------------------------
 
-static hw::Audio<SAMPLES_PER_TICK>  audio{DAC_FREQ};
+static HWR::Audio<SAMPLES_PER_TICK>  audio{DAC_FREQ};
 
 static void hwTick();
 
@@ -88,7 +88,7 @@ void MTL::Audio::getSamples(uint32_t* buffer, unsigned n)
 #else
 
 template<>
-void hw::Audio<SAMPLES_PER_TICK>::getSamples(int16_t* buffer, unsigned n)
+void HWR::Audio<SAMPLES_PER_TICK>::getSamples(int16_t* buffer, unsigned n)
 {
    (void) MIDI_DEBUG; // XXX avoid an unrelated warning
 

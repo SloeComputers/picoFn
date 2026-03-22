@@ -35,6 +35,6 @@ enum Symbol : unsigned char
    SYMBOL_INFINITY
 };
 
-extern void symbolDefine(hw::Lcd& lcd);
+extern void symbolDefine(HWR::Lcd& lcd);
 
 #endif
