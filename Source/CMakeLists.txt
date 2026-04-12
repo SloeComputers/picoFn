@@ -12,4 +12,4 @@ add_picoX7_executable(picoFn
                          Table_freq_mHz.cpp
                          Table_atten_cB.cpp
                       LIBRARIES
-                         SIG)
+                         SIG_FP32)
