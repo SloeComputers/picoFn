@@ -291,17 +291,17 @@ private:
    uint8_t    detune7{};    //!< MIDI note fraction (7 bit)
    uint8_t    amp_index{};
 
-   SIG::Osc::Sine     sine{};
-   SIG::Osc::Triangle triangle{};
-   SIG::Osc::Ramp     ramp{};
-   SIG::Osc::Square   square{};
-   SIG::Osc::Pwm      pulse{};
-   SIG::Osc::Square   phase_ref{};
-   SIG::Osc::Noise    noise{};
+   SIG::osc::Sine     sine{};
+   SIG::osc::Triangle triangle{};
+   SIG::osc::Ramp     ramp{};
+   SIG::osc::Square   square{};
+   SIG::osc::Pwm      pulse{};
+   SIG::osc::Square   phase_ref{};
+   SIG::osc::Noise    noise{};
    SIG::ExpSlew       gain{0.1f};
    SIG::ExpSlew       note_slew{0.1f};
 
-   SIG::Osc::Base* osc[6] =
+   SIG::osc::Base* osc[6] =
    {
       &sine,
       &triangle,
