@@ -54,7 +54,7 @@ public:
       }
 
       // Modulation
-      char mod_symbol;
+      char mod_symbol{' '};
       switch(mod)
       {
       case NONE: mod_symbol = ' '; break;
