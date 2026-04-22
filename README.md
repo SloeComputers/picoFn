@@ -15,6 +15,10 @@
 + Attenuation 0dB to 60dB and infinity
 + Modulation/mix of right channel by/with left - Amplitude (AM), Ring (RM), Frequency (FM), Pulse Width (PWM), Mix
 
+## Status
+
+[![Build Status](https://github.com/SloeComputers/picoFn/actions/workflows/build_on_push.yml/badge.svg)](https://github.com/SloeComputers/picoFn/actions/workflows/build_on_push.yml)
+
 ## To Do
 
 + Try some higher sample rates
