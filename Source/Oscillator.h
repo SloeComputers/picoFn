@@ -37,6 +37,9 @@ public:
       noteOn(69, 0);
    }
 
+// The format-truncation warning seems buggy
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
    void getInfo(char* buffer16_) const
    {
       // Waveform
@@ -151,6 +154,7 @@ public:
       snprintf(buffer16_, 17, "%c%c%6s %3s%4s",
                wave_symbol, mod_symbol, freq_text, note_text, atten_text);
    }
+#pragma GCC diagnostic pop
 
    void sync()
    {
