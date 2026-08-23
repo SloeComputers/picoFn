@@ -46,15 +46,15 @@ private:
    {
       switch(control_)
       {
-      case MK::K1: case MX::TOP1: osc_lft.noteOn(value_ + 8); break;
-      case MK::K2: case MX::MID1: osc_lft.setDetune(value_);  break;
-      case MK::K3: case MX::BTM1: osc_lft.setPhase(value_);   break;
-      case MK::K4: case MX::LVL1: osc_lft.setAmpl(value_);    break;
+      case MK::K1: case MX::LVL1: osc_lft.noteOn(value_ + 8); break;
+      case MK::K2: case MX::LVL2: osc_lft.setDetune(value_);  break;
+      case MK::K3: case MX::LVL3: osc_lft.setPhase(value_);   break;
+      case MK::K4: case MX::LVL4: osc_lft.setAmpl(value_);    break;
 
-      case MK::K5: case MX::TOP2: osc_rgt.noteOn(value_ + 8); break;
-      case MK::K6: case MX::MID2: osc_rgt.setDetune(value_);  break;
-      case MK::K7: case MX::BTM2: osc_rgt.setPhase(value_);   break;
-      case MK::K8: case MX::LVL2: osc_rgt.setAmpl(value_);    break;
+      case MK::K5: case MX::LVL5: osc_rgt.noteOn(value_ + 8); break;
+      case MK::K6: case MX::LVL6: osc_rgt.setDetune(value_);  break;
+      case MK::K7: case MX::LVL7: osc_rgt.setPhase(value_);   break;
+      case MK::K8: case MX::LVL8: osc_rgt.setAmpl(value_);    break;
       }
    }
 

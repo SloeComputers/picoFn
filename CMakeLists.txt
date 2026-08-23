@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.20)
 project(picoFn
         LANGUAGES CXX C ASM
         VERSION 0.04
-        HOMEPAGE_URL "https://github.com/SloeComputers/picoX7")
+        HOMEPAGE_URL "https://github.com/SloeComputers/picoFn")
 
 set(PDK_PROJ_OWNER "Sloe Computers")
 set(PDK_PROJ_EMAIL "sloecomputer@gmail.com")
