@@ -20,9 +20,8 @@ static const unsigned SAMPLES_PER_TICK = DAC_FREQ / TICK_RATE;  //!< DAC buffer 
 static const bool     MIDI_DEBUG       = false;
 
 
-static HWR::FilePortal file_portal{"picoFn",
-                                  "https://github.com/SloeComputers/picoFn"};
-static Generator  generator{};
+static HWR::FilePortal file_portal{"picoFn", "https://github.com/SloeComputers/picoFn"};
+static Generator       generator{};
 
 
 // --- Physical MIDI -----------------------------------------------------------
